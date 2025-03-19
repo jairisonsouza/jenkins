@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.jenkins.rule=Host(`seudominio.com.br`)" # Substitua pelo seu domínio
+        - "traefik.http.routers.jenkins.entrypoints=websecure"
+        - "traefik.http.routers.jenkins.tls.certresolver=myresolver"
+        - "traefik.http.services.jenkins.loadbalancer.server.port=8080"
+    environment:
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=true" # False desativa o assistente de configuração inicial
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    networks:
+      - jenkins-net
+      - traefik-net
+
+volumes:
+  jenkins_home:
+
+networks:
+  jenkins-net:
+    external: true
+  networks:
+  traefik-net:
+    external: true
