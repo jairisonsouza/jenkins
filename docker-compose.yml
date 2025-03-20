@@ -17,6 +17,7 @@ services:
       JAVA_OPTS: "-Djenkins.install.runSetupWizard=true" # False desativa o assistente de configuração inicial
     volumes:
       - jenkins_home:/var/jenkins_home
+      - ${HOME}/.ssh:/var/jenkins_home/.ssh
     networks:
       - jenkins-net
       - traefik-net
